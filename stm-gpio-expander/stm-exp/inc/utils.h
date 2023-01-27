@@ -20,4 +20,9 @@
 #define I2C_WRITE_OPERATION 0
 #define I2C_READ_OPERATION 1
 
+// MACROS
+#define SLAVE_SET_BIT(reg, bit) ((reg) |= (1 << (bit)))
+#define SLAVE_CLR_BIT(reg, bit) ((reg) &= ~(1 << (bit)))
+#define SLAVE_READ_BIT(reg, bit) (((reg) & ((1) << (bit))) >> bit) // retorna valor booleano
+
 #endif
