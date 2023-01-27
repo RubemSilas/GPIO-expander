@@ -25,4 +25,10 @@
 #define SLAVE_CLR_BIT(reg, bit) ((reg) &= ~(1 << (bit)))
 #define SLAVE_READ_BIT(reg, bit) (((reg) & ((1) << (bit))) >> bit) // retorna valor booleano
 
+// MSG RELATED
+#define BYTE_MASK (0xFF)
+#define EXP_RW_BIT_POS (24)
+#define EXP_REG_POS (16)
+#define EXP_DATA_POS (0)
+
 #endif
