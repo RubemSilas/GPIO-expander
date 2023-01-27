@@ -87,4 +87,6 @@ typedef struct
 } genereric_reg_t;
 #pragma pack(pop)
 
+void print_register(uint32_t reg);
+
 #endif
