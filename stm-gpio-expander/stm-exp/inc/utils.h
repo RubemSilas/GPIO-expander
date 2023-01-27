@@ -31,4 +31,60 @@
 #define EXP_REG_POS (16)
 #define EXP_DATA_POS (0)
 
+#pragma pack(push)
+#pragma pack(1)
+typedef struct
+{
+    uint8_t rw;
+    uint8_t exp_register;
+    uint16_t exp_data;
+} i2c_msg_t;
+
+typedef enum
+{
+    // registradores de direcao
+    EXP_IO_DIR_A_REG,
+    EXP_IO_DIR_B_REG,
+    EXP_IO_DIR_C_REG,
+
+    // modo de saida
+    EXP_IO_OUTPUT_MODE_A_REG,
+    EXP_IO_OUTPUT_MODE_B_REG,
+    EXP_IO_OUTPUT_MODE_C_REG,
+
+    // entrada flutuante ou com referencia
+    EXP_IO_INPUT_MODE_A_REG,
+    EXP_IO_INPUT_MODE_B_REG,
+    EXP_IO_INPUT_MODE_C_REG,
+
+    // habilita pull up
+    EXP_IO_INPUT_PULL_UP_A_REG,
+    EXP_IO_INPUT_PULL_UP_B_REG,
+    EXP_IO_INPUT_PULL_UP_C_REG,
+
+    // habilita pull down
+    EXP_IO_INPUT_PULL_DOWN_A_REG,
+    EXP_IO_INPUT_PULL_DOWN_B_REG,
+    EXP_IO_INPUT_PULL_DOWN_C_REG,
+
+    // habilita pull down
+    EXP_IO_INPUT_INVERT_POL_A_REG,
+    EXP_IO_INPUT_INVERT_POL_B_REG,
+    EXP_IO_INPUT_INVERT_POL_C_REG,
+
+    // registrtadores de GPIO
+    EXP_IO_GPIO_A_REG,
+    EXP_IO_GPIO_B_REG,
+    EXP_IO_GPIO_C_REG,
+
+    EXP_TOTAL_REGISTERS,
+} exp_registers_addr_t;
+
+typedef struct
+{
+    exp_registers_addr_t reg_name;
+    uint16_t reg_content;
+} genereric_reg_t;
+#pragma pack(pop)
+
 #endif
