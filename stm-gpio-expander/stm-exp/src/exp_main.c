@@ -48,3 +48,77 @@ void write_to_register(genereric_reg_t *gen_register, uint16_t incoming_data)
     sprintf(log_msg, "escrita do registrador %d - novo valor: %X\r\n", gen_register->reg_name, gen_register->reg_content);
     HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
 }
+
+void i2c_request_listener(void)
+{
+    genereric_reg_t expander_registers[EXP_TOTAL_REGISTERS] =
+        {
+            {.reg_name = EXP_IO_DIR_A_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_DIR_B_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_DIR_C_REG, .reg_content = 0},
+
+            {.reg_name = EXP_IO_OUTPUT_MODE_A_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_OUTPUT_MODE_B_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_OUTPUT_MODE_C_REG, .reg_content = 0},
+
+            {.reg_name = EXP_IO_INPUT_MODE_A_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_INPUT_MODE_B_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_INPUT_MODE_C_REG, .reg_content = 0},
+
+            {.reg_name = EXP_IO_INPUT_PULL_UP_A_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_INPUT_PULL_UP_B_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_INPUT_PULL_UP_C_REG, .reg_content = 0},
+
+            {.reg_name = EXP_IO_INPUT_PULL_DOWN_A_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_INPUT_PULL_DOWN_B_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_INPUT_PULL_DOWN_C_REG, .reg_content = 0},
+
+            {.reg_name = EXP_IO_INPUT_INVERT_POL_A_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_INPUT_INVERT_POL_B_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_INPUT_INVERT_POL_C_REG, .reg_content = 0},
+
+            {.reg_name = EXP_IO_GPIO_A_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_GPIO_B_REG, .reg_content = 0},
+            {.reg_name = EXP_IO_GPIO_C_REG, .reg_content = 0},
+        };
+
+    char log_msg[100];
+
+    char uart_init_msg[] = "========== SLAVE I2C ==========\r\n";
+    HAL_UART_Transmit(&huart2, (uint8_t *)uart_init_msg, strlen(uart_init_msg), 100);
+
+    uint32_t rqst_buffer;
+    i2c_msg_t incoming_i2c_msg;
+
+    while (1)
+    {
+        if (HAL_I2C_Slave_Receive(&I2C_HANDLER, (uint8_t *)&rqst_buffer, 4, I2C_TIMEOUT) == HAL_OK)
+        {
+            /* preenchimento da estrutura */
+            incoming_i2c_msg.rw = SLAVE_READ_BIT(rqst_buffer, EXP_RW_BIT_POS);
+            incoming_i2c_msg.exp_register = (rqst_buffer >> 16) & BYTE_MASK;
+            incoming_i2c_msg.exp_data = rqst_buffer & BYTE_MASK;
+
+            if (incoming_i2c_msg.rw == I2C_WRITE_OPERATION)
+            {
+                sprintf(log_msg, "msg de requisicao de escrita\r\n");
+                HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
+
+                if (incoming_i2c_msg.exp_register < EXP_TOTAL_REGISTERS)
+                {
+                    write_to_register(&expander_registers, incoming_i2c_msg.exp_data);
+                }
+            }
+            else if (incoming_i2c_msg.rw == I2C_READ_OPERATION)
+            {
+                sprintf(log_msg, "msg de requisicao de leitura\r\n");
+                HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
+
+                if (incoming_i2c_msg.exp_register < EXP_TOTAL_REGISTERS)
+                {
+                    read_register(expander_registers[incoming_i2c_msg.exp_register].reg_name, expander_registers[incoming_i2c_msg.exp_register].reg_content);
+                }
+            }
+        }
+    }
+}

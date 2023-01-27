@@ -3,4 +3,6 @@
 
 #include "utils.h"
 
+void i2c_request_listener(void);
+
 #endif
