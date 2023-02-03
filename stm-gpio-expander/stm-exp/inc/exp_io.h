@@ -25,5 +25,32 @@ enum exp_pins_e
     EXP_IO_PIN_15,
 };
 
+// CONFIGURAÇÕES DE PINOS
+typedef enum
+{
+    EXP_INPUT_MODE,
+    EXP_OUTPUT_MODE,
+} exp_dir_t;
+
+typedef enum
+{
+    EXP_OUT_VERY_LOW,
+    EXP_OUT_LOW,
+    EXP_OUT_HIGH,
+    EXP_OUT_VERY_HIGH,
+}exp_output_speed_t;
+
+typedef enum
+{
+    EXP_FLOATING_INPUT,
+    EXP_REFERENCED_INPUT,
+}exp_input_mode_t;
+
+typedef enum
+{
+    EXP_PULL_UP = 1,
+    EXP_PULL_DOWN,
+}exp_input_reference_t;
+
 
 #endif
