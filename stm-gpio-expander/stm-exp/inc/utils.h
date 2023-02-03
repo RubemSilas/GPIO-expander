@@ -23,7 +23,7 @@
 // MACROS
 #define SLAVE_SET_BIT(reg, bit) ((reg) |= (1 << (bit)))
 #define SLAVE_CLR_BIT(reg, bit) ((reg) &= ~(1 << (bit)))
-#define SLAVE_READ_BIT(reg, bit) (((reg) & ((1) << (bit))) >> bit) // retorna valor booleano
+#define SLAVE_READ_BIT(reg, bit) ((reg >> bit) & 1) // retorna valor booleano
 
 // MSG RELATED
 #define BYTE_MASK (0xFF)
