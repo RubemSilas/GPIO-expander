@@ -83,6 +83,8 @@ void i2c_request_listener(void)
     char uart_init_msg[] = "========== SLAVE I2C ==========\r\n";
     HAL_UART_Transmit(&huart2, (uint8_t *)uart_init_msg, strlen(uart_init_msg), 100);
 
+    exp_init_gpio_clks();
+
     uint32_t rqst_buffer;
     i2c_msg_t incoming_i2c_msg;
 

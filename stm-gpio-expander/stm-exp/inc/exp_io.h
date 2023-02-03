@@ -98,5 +98,6 @@ typedef struct
     unsigned extended_cfg_content_15 : 2;
 }extended_reg_content_t;
 
+void exp_init_gpio_clks(void);
 
 #endif
