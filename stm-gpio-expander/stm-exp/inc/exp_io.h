@@ -101,6 +101,8 @@ typedef struct
 // ESCRITA
 void exp_direction_config(uint16_t virtual_reg, exp_ports_t port);
 void exp_out_mode_config(uint16_t virtual_reg, exp_ports_t port);
+void exp_in_mode_config(uint16_t virtual_reg, exp_ports_t port);
+void exp_in_reference_config(uint16_t virtual_reg, exp_ports_t port);
 void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port);
 
 // LEITURA

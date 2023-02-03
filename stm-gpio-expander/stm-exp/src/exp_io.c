@@ -131,6 +131,97 @@ void exp_out_mode_config(uint16_t virtual_reg, exp_ports_t port)
     };
 }
 
+void exp_in_mode_config(uint16_t virtual_reg, exp_ports_t port)
+{
+    switch (port)
+    {
+    case EXP_PORT_A:
+        current_scope_registers[EXP_IO_INPUT_MODE_A_REG].reg_content = virtual_reg;
+        break;
+    case EXP_PORT_B:
+        current_scope_registers[EXP_IO_INPUT_MODE_B_REG].reg_content = virtual_reg;
+        break;
+    case EXP_PORT_C:
+        current_scope_registers[EXP_IO_INPUT_MODE_C_REG].reg_content = virtual_reg;
+        break;
+    default:
+        break;
+    };
+}
+
+void exp_in_reference_config(uint16_t virtual_reg, exp_ports_t port)
+{
+    uint16_t short_pupdr;
+
+    switch (port)
+    {
+    case EXP_PORT_A:
+        short_pupdr = current_scope_registers[EXP_IO_INPUT_MODE_A_REG].reg_content;
+        break;
+    case EXP_PORT_B:
+        short_pupdr = current_scope_registers[EXP_IO_INPUT_MODE_B_REG].reg_content;
+        break;
+    case EXP_PORT_C:
+        short_pupdr = current_scope_registers[EXP_IO_INPUT_MODE_C_REG].reg_content;
+        break;
+    default:
+        break;
+    };
+
+    uint32_t in_ref_reg_cfg = 0;
+    extended_reg_content_t pull_ref_cfg_buffer =
+        {
+            .extended_cfg_content_0 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_0)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_0)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_1 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_1)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_1)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_2 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_2)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_2)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_3 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_3)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_3)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_4 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_4)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_4)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_4 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_4)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_4)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_5 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_5)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_5)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_6 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_6)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_6)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_7 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_7)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_7)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_8 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_8)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_8)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_9 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_9)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_9)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_10 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_10)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_10)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_11 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_11)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_11)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_12 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_12)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_12)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_13 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_13)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_13)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_14 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_14)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_14)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+            .extended_cfg_content_15 = (SLAVE_READ_BIT(short_pupdr, EXP_IO_PIN_15)) ? ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_15)) ? EXP_PULL_UP : EXP_PULL_DOWN) : 0,
+        };
+
+    in_ref_reg_cfg = (uint32_t)((pull_ref_cfg_buffer.extended_cfg_content_15 << EXTENDED_REG_POS_15) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_14 << EXTENDED_REG_POS_14) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_13 << EXTENDED_REG_POS_13) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_12 << EXTENDED_REG_POS_12) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_11 << EXTENDED_REG_POS_11) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_10 << EXTENDED_REG_POS_10) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_9 << EXTENDED_REG_POS_9) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_8 << EXTENDED_REG_POS_8) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_7 << EXTENDED_REG_POS_7) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_6 << EXTENDED_REG_POS_6) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_5 << EXTENDED_REG_POS_5) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_4 << EXTENDED_REG_POS_4) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_3 << EXTENDED_REG_POS_3) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_2 << EXTENDED_REG_POS_2) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_1 << EXTENDED_REG_POS_1) |
+                                (pull_ref_cfg_buffer.extended_cfg_content_0 << EXTENDED_REG_POS_0));
+
+    switch (port)
+    {
+    case EXP_PORT_A:
+        GPIOA->PUPDR = in_ref_reg_cfg;
+        break;
+    case EXP_PORT_B:
+        GPIOB->PUPDR = in_ref_reg_cfg;
+        break;
+    case EXP_PORT_C:
+        GPIOC->PUPDR = in_ref_reg_cfg;
+        break;
+    default:
+        break;
+    };
+}
 
 void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port)
 {
@@ -198,6 +289,40 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
             break;
         case EXP_PORT_C:
             r_reg_16 = GPIOC->OTYPER;
+            break;
+        default:
+            break;
+        };
+    }
+    else if ((reg_name >= EXP_IO_INPUT_MODE_A_REG) && (reg_name <= EXP_IO_INPUT_MODE_C_REG)) // REGISTRADORES DE MODO DE ENTRADA reg de 16 bits
+    {
+        switch (port)
+        {
+        case EXP_PORT_A:
+            r_reg_16 = current_scope_registers[EXP_IO_INPUT_MODE_A_REG].reg_content;
+            break;
+        case EXP_PORT_B:
+            r_reg_16 = current_scope_registers[EXP_IO_INPUT_MODE_B_REG].reg_content;
+            break;
+        case EXP_PORT_C:
+            r_reg_16 = current_scope_registers[EXP_IO_INPUT_MODE_C_REG].reg_content;
+            break;
+        default:
+            break;
+        };
+    }
+    else if ((reg_name >= EXP_IO_INPUT_REF_A_REG) && (reg_name <= EXP_IO_INPUT_REF_C_REG)) // REGISTRADORES DE PULL UP E PULL DOWN reg de 32 bits
+    {
+        switch (port)
+        {
+        case EXP_PORT_A:
+            r_reg_16 = current_scope_registers[EXP_IO_INPUT_REF_A_REG].reg_content;
+            break;
+        case EXP_PORT_B:
+            r_reg_16 = current_scope_registers[EXP_IO_INPUT_REF_B_REG].reg_content;
+            break;
+        case EXP_PORT_C:
+            r_reg_16 = current_scope_registers[EXP_IO_INPUT_REF_C_REG].reg_content;
             break;
         default:
             break;
