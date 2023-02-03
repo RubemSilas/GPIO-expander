@@ -16,13 +16,13 @@ void read_register(genereric_reg_t *gen_register)
         };
 
     i2c_transmit_msg |= (exp_transmit_msg.rw << EXP_RW_BIT_POS) | (exp_transmit_msg.exp_register << EXP_REG_POS) | (exp_transmit_msg.exp_data << EXP_DATA_POS);
-    sprintf(log_msg, "leitura do registrador %d - valor lido: %X\r\n", r_register, r_reg_value);
+    sprintf(log_msg, "leitura do registrador %d - valor lido: %X\r\n", gen_register->reg_name, gen_register->reg_content);
     HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
 
     err = HAL_I2C_Slave_Transmit(&I2C_HANDLER, (uint8_t *)&i2c_transmit_msg, sizeof(uint32_t), I2C_TIMEOUT);
     if (err != HAL_OK)
     {
-        sprintf(log_msg, "erro ao retornar valor do registrador: (%d)\r\n", r_register);
+        sprintf(log_msg, "erro ao retornar valor do registrador: (%d)\r\n", gen_register->reg_name);
         HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
     }
     else
@@ -48,7 +48,7 @@ void write_to_register(genereric_reg_t *gen_register, uint16_t incoming_data)
         };
 
     i2c_transmit_msg |= (exp_transmit_msg.rw << EXP_RW_BIT_POS) | (exp_transmit_msg.exp_register << EXP_REG_POS) | (exp_transmit_msg.exp_data << EXP_DATA_POS);
-    sprintf(log_msg, "escrita do registrador %d - novo valor: %X\r\n", gen_register->reg_name, gen_register->reg_content);
+    sprintf(log_msg, " - escrita do registrador %d - novo valor: %X\r\n", gen_register->reg_name, gen_register->reg_content);
     HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
 }
 
@@ -69,14 +69,14 @@ void i2c_request_listener(void)
     {
         if (HAL_I2C_Slave_Receive(&I2C_HANDLER, (uint8_t *)&rqst_buffer, 4, I2C_TIMEOUT) == HAL_OK)
         {
-            /* preenchimento da estrutura */
+            /* preenchimento da estrutura de mensagem de envio */
             incoming_i2c_msg.rw = SLAVE_READ_BIT(rqst_buffer, EXP_RW_BIT_POS);
             incoming_i2c_msg.exp_register = (rqst_buffer >> 16) & BYTE_MASK;
             incoming_i2c_msg.exp_data = rqst_buffer & HALF_WORD_MASK;
 
             if (incoming_i2c_msg.rw == I2C_WRITE_OPERATION)
             {
-                sprintf(log_msg, "msg de requisicao de escrita\r\n");
+                sprintf(log_msg, ">>> REQUISICAO DE ESCRITA\r\n");
                 HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
 
                 if (incoming_i2c_msg.exp_register < EXP_TOTAL_REGISTERS)
@@ -86,7 +86,7 @@ void i2c_request_listener(void)
             }
             else if (incoming_i2c_msg.rw == I2C_READ_OPERATION)
             {
-                sprintf(log_msg, "msg de requisicao de leitura\r\n");
+                sprintf(log_msg, ">>> REQUISICAO DE LEITURA\r\n");
                 HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
 
                 if (incoming_i2c_msg.exp_register < EXP_TOTAL_REGISTERS)
