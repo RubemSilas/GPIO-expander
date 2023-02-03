@@ -40,6 +40,13 @@ typedef struct
     uint16_t exp_data;
 } i2c_msg_t;
 
+typedef enum 
+{
+    EXP_PORT_A,
+    EXP_PORT_B,
+    EXP_PORT_C,
+}exp_ports_t;
+
 typedef enum
 {
     // registradores de direcao
@@ -80,9 +87,13 @@ typedef enum
     EXP_TOTAL_REGISTERS,
 } exp_registers_addr_t;
 
+typedef void (*exp_operational_func_t)(uint16_t virtual_reg, exp_ports_t port);
+
 typedef struct
 {
     exp_registers_addr_t reg_name;
+    exp_ports_t port_name;
+    exp_operational_func_t op_func;
     uint16_t reg_content;
 } genereric_reg_t;
 #pragma pack(pop)
