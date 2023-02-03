@@ -98,6 +98,12 @@ typedef struct
     unsigned extended_cfg_content_15 : 2;
 }extended_reg_content_t;
 
+// ESCRITA
+void exp_direction_config(uint16_t virtual_reg, exp_ports_t port);
+void exp_out_mode_config(uint16_t virtual_reg, exp_ports_t port);
+void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port);
+
+// INICIALIZACAO
 void exp_init_gpio_clks(void);
 
 #endif

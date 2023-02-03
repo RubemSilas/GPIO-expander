@@ -53,13 +53,13 @@ void i2c_request_listener(void)
 {
     genereric_reg_t expander_registers[EXP_TOTAL_REGISTERS] =
         {
-        {.reg_name = EXP_IO_DIR_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
-        {.reg_name = EXP_IO_DIR_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
-        {.reg_name = EXP_IO_DIR_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
+        {.reg_name = EXP_IO_DIR_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_direction_config, .reg_content = 0},
+        {.reg_name = EXP_IO_DIR_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_direction_config, .reg_content = 0},
+        {.reg_name = EXP_IO_DIR_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_direction_config, .reg_content = 0},
 
-        {.reg_name = EXP_IO_OUTPUT_MODE_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
-        {.reg_name = EXP_IO_OUTPUT_MODE_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
-        {.reg_name = EXP_IO_OUTPUT_MODE_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
+        {.reg_name = EXP_IO_OUTPUT_MODE_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_out_mode_config, .reg_content = 0},
+        {.reg_name = EXP_IO_OUTPUT_MODE_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_out_mode_config, .reg_content = 0},
+        {.reg_name = EXP_IO_OUTPUT_MODE_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_out_mode_config, .reg_content = 0},
 
         {.reg_name = EXP_IO_INPUT_MODE_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
         {.reg_name = EXP_IO_INPUT_MODE_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
@@ -73,9 +73,9 @@ void i2c_request_listener(void)
         {.reg_name = EXP_IO_INPUT_INVERT_POL_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
         {.reg_name = EXP_IO_INPUT_INVERT_POL_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
 
-        {.reg_name = EXP_IO_GPIO_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
-        {.reg_name = EXP_IO_GPIO_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
-        {.reg_name = EXP_IO_GPIO_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_gpio_state_config, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_gpio_state_config, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_gpio_state_config, .reg_content = 0},
         };
 
     char log_msg[100];
