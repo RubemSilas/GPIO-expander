@@ -1,5 +1,33 @@
 #include "exp_io.h"
 
+// PILHA DE REGISTRADORES VIRTUAIS
+genereric_reg_t current_scope_registers[EXP_TOTAL_REGISTERS] =
+    {
+        {.reg_name = EXP_IO_DIR_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_direction_config, .reg_content = 0},
+        {.reg_name = EXP_IO_DIR_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_direction_config, .reg_content = 0},
+        {.reg_name = EXP_IO_DIR_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_direction_config, .reg_content = 0},
+
+        {.reg_name = EXP_IO_OUTPUT_MODE_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_out_mode_config, .reg_content = 0},
+        {.reg_name = EXP_IO_OUTPUT_MODE_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_out_mode_config, .reg_content = 0},
+        {.reg_name = EXP_IO_OUTPUT_MODE_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_out_mode_config, .reg_content = 0},
+
+        {.reg_name = EXP_IO_INPUT_MODE_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_in_mode_config, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_MODE_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_in_mode_config, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_MODE_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_in_mode_config, .reg_content = 0},
+
+        {.reg_name = EXP_IO_INPUT_REF_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_in_reference_config, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_REF_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_in_reference_config, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_REF_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_in_reference_config, .reg_content = 0},
+
+        {.reg_name = EXP_IO_INPUT_INVERT_POL_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_INVERT_POL_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_INVERT_POL_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
+
+        {.reg_name = EXP_IO_GPIO_A_REG, .op_func = &exp_gpio_state_config, .port_name = EXP_PORT_A, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_B_REG, .op_func = &exp_gpio_state_config, .port_name = EXP_PORT_B, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_C_REG, .op_func = &exp_gpio_state_config, .port_name = EXP_PORT_C, .reg_content = 0},
+};
+
 // HELPERS ========================================================================================================
 uint16_t long_to_short_reg(uint32_t long_value)
 {
@@ -194,6 +222,13 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
     }
     return r_reg_16;
 }
+
+// INICIALIZACAO ==================================================================================================
+genereric_reg_t *gpio_setup_cfg(void)
+{
+    return &current_scope_registers;
+}
+
 void exp_init_gpio_clks(void)
 {
     __HAL_RCC_GPIOA_CLK_ENABLE();

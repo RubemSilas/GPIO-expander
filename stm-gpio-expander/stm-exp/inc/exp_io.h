@@ -107,6 +107,7 @@ void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port);
 uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port);
 
 // INICIALIZACAO
+genereric_reg_t *gpio_setup_cfg(void);
 void exp_init_gpio_clks(void);
 
 #endif
