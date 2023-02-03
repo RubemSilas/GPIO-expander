@@ -53,33 +53,29 @@ void i2c_request_listener(void)
 {
     genereric_reg_t expander_registers[EXP_TOTAL_REGISTERS] =
         {
-            {.reg_name = EXP_IO_DIR_A_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_DIR_B_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_DIR_C_REG, .reg_content = 0},
+        {.reg_name = EXP_IO_DIR_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
+        {.reg_name = EXP_IO_DIR_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
+        {.reg_name = EXP_IO_DIR_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
 
-            {.reg_name = EXP_IO_OUTPUT_MODE_A_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_OUTPUT_MODE_B_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_OUTPUT_MODE_C_REG, .reg_content = 0},
+        {.reg_name = EXP_IO_OUTPUT_MODE_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
+        {.reg_name = EXP_IO_OUTPUT_MODE_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
+        {.reg_name = EXP_IO_OUTPUT_MODE_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
 
-            {.reg_name = EXP_IO_INPUT_MODE_A_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_INPUT_MODE_B_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_INPUT_MODE_C_REG, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_MODE_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_MODE_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_MODE_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
 
-            {.reg_name = EXP_IO_INPUT_PULL_UP_A_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_INPUT_PULL_UP_B_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_INPUT_PULL_UP_C_REG, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_REF_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_REF_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_REF_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
 
-            {.reg_name = EXP_IO_INPUT_PULL_DOWN_A_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_INPUT_PULL_DOWN_B_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_INPUT_PULL_DOWN_C_REG, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_INVERT_POL_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_INVERT_POL_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_INVERT_POL_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
 
-            {.reg_name = EXP_IO_INPUT_INVERT_POL_A_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_INPUT_INVERT_POL_B_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_INPUT_INVERT_POL_C_REG, .reg_content = 0},
-
-            {.reg_name = EXP_IO_GPIO_A_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_GPIO_B_REG, .reg_content = 0},
-            {.reg_name = EXP_IO_GPIO_C_REG, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
         };
 
     char log_msg[100];

@@ -65,17 +65,12 @@ typedef enum
     EXP_IO_INPUT_MODE_B_REG,
     EXP_IO_INPUT_MODE_C_REG,
 
-    // habilita pull up
-    EXP_IO_INPUT_PULL_UP_A_REG,
-    EXP_IO_INPUT_PULL_UP_B_REG,
-    EXP_IO_INPUT_PULL_UP_C_REG,
+    // habilita referencia do pino
+    EXP_IO_INPUT_REF_A_REG,
+    EXP_IO_INPUT_REF_B_REG,
+    EXP_IO_INPUT_REF_C_REG,
 
-    // habilita pull down
-    EXP_IO_INPUT_PULL_DOWN_A_REG,
-    EXP_IO_INPUT_PULL_DOWN_B_REG,
-    EXP_IO_INPUT_PULL_DOWN_C_REG,
-
-    // habilita pull down
+    // inverte a polaridade do pino
     EXP_IO_INPUT_INVERT_POL_A_REG,
     EXP_IO_INPUT_INVERT_POL_B_REG,
     EXP_IO_INPUT_INVERT_POL_C_REG,
