@@ -97,7 +97,7 @@ void i2c_request_listener(void)
             /* preenchimento da estrutura */
             incoming_i2c_msg.rw = SLAVE_READ_BIT(rqst_buffer, EXP_RW_BIT_POS);
             incoming_i2c_msg.exp_register = (rqst_buffer >> 16) & BYTE_MASK;
-            incoming_i2c_msg.exp_data = rqst_buffer & BYTE_MASK;
+            incoming_i2c_msg.exp_data = rqst_buffer & HALF_WORD_MASK;
 
             if (incoming_i2c_msg.rw == I2C_WRITE_OPERATION)
             {

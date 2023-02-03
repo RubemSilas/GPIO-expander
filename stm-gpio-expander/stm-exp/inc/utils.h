@@ -27,6 +27,7 @@
 
 // MSG RELATED
 #define BYTE_MASK (0xFF)
+#define HALF_WORD_MASK (0xFFFF)
 #define EXP_RW_BIT_POS (24)
 #define EXP_REG_POS (16)
 #define EXP_DATA_POS (0)
