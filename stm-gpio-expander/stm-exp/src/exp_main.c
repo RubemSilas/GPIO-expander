@@ -1,16 +1,18 @@
 #include "exp_main.h"
 
-void read_register(exp_registers_addr_t r_register, uint16_t r_reg_value)
+void read_register(genereric_reg_t *gen_register)
 {
     char log_msg[50];
     HAL_StatusTypeDef err;
+
+    gen_register->reg_content = read_stm_reg(gen_register->reg_name, gen_register->port_name);
 
     uint32_t i2c_transmit_msg = 0;
     i2c_msg_t exp_transmit_msg =
         {
             .rw = I2C_READ_OPERATION,
-            .exp_register = r_register,
-            .exp_data = r_reg_value,
+            .exp_register = gen_register->reg_name,
+            .exp_data = gen_register->reg_content,
         };
 
     i2c_transmit_msg |= (exp_transmit_msg.rw << EXP_RW_BIT_POS) | (exp_transmit_msg.exp_register << EXP_REG_POS) | (exp_transmit_msg.exp_data << EXP_DATA_POS);
@@ -115,7 +117,7 @@ void i2c_request_listener(void)
 
                 if (incoming_i2c_msg.exp_register < EXP_TOTAL_REGISTERS)
                 {
-                    read_register(expander_registers[incoming_i2c_msg.exp_register].reg_name, expander_registers[incoming_i2c_msg.exp_register].reg_content);
+                    read_register(&expander_registers[incoming_i2c_msg.exp_register]);
                 }
             }
         }

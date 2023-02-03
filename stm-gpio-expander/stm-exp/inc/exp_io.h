@@ -103,6 +103,9 @@ void exp_direction_config(uint16_t virtual_reg, exp_ports_t port);
 void exp_out_mode_config(uint16_t virtual_reg, exp_ports_t port);
 void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port);
 
+// LEITURA
+uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port);
+
 // INICIALIZACAO
 void exp_init_gpio_clks(void);
 

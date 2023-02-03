@@ -1,5 +1,17 @@
 #include "exp_io.h"
 
+// HELPERS ========================================================================================================
+uint16_t long_to_short_reg(uint32_t long_value)
+{
+    uint16_t short_value = 0x00;
+
+    for (int parse_step = 30; parse_step >= 0; parse_step -= 2)
+    {
+        int resulting_bit = ((long_value >> parse_step) & 0x03) ? 1 : 0;
+        short_value = (short_value << 1) | resulting_bit;
+    }
+    return short_value;
+}
 
 // FUNCOES DE ESCRITA DE REGISTRADOR ==============================================================================
 void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
@@ -117,6 +129,71 @@ void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port)
     };
 }
 
+// FUNCOES DE LEITURA =============================================================================================
+uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
+{
+    uint16_t r_reg_16 = 0;
+    uint32_t r_reg_32 = 0;
+
+    if ((reg_name >= EXP_IO_DIR_A_REG) && (reg_name <= EXP_IO_DIR_C_REG)) // REGISTRADORES DE DIREÇÃO - reg de 32 bits
+    {
+        switch (port)
+        {
+        case EXP_PORT_A:
+            r_reg_32 = GPIOA->MODER;
+            print_register(r_reg_32);
+            r_reg_16 = long_to_short_reg(r_reg_32);
+            break;
+        case EXP_PORT_B:
+            r_reg_32 = GPIOB->MODER;
+            print_register(r_reg_32);
+            r_reg_16 = long_to_short_reg(r_reg_32);
+            break;
+        case EXP_PORT_C:
+            r_reg_32 = GPIOC->MODER;
+            print_register(r_reg_32);
+            r_reg_16 = long_to_short_reg(r_reg_32);
+            break;
+        default:
+            break;
+        };
+    }
+    else if ((reg_name >= EXP_IO_OUTPUT_MODE_A_REG) && (reg_name <= EXP_IO_OUTPUT_MODE_C_REG)) // REGISTRADORES DE MODO DE SAIDA - reg de 16 bits
+    {
+        switch (port)
+        {
+        case EXP_PORT_A:
+            r_reg_16 = GPIOA->OTYPER;
+            break;
+        case EXP_PORT_B:
+            r_reg_16 = GPIOB->OTYPER;
+            break;
+        case EXP_PORT_C:
+            r_reg_16 = GPIOC->OTYPER;
+            break;
+        default:
+            break;
+        };
+    }
+    else if ((reg_name >= EXP_IO_GPIO_A_REG) && (reg_name <= EXP_IO_GPIO_C_REG)) // REGISTRADORES DE GPIO reg de 32 bits
+    {
+        switch (port)
+        {
+        case EXP_PORT_A:
+            r_reg_16 = GPIOA->IDR;
+            break;
+        case EXP_PORT_B:
+            r_reg_16 = GPIOB->IDR;
+            break;
+        case EXP_PORT_C:
+            r_reg_16 = GPIOC->IDR;
+            break;
+        default:
+            break;
+        };
+    }
+    return r_reg_16;
+}
 void exp_init_gpio_clks(void)
 {
     __HAL_RCC_GPIOA_CLK_ENABLE();
