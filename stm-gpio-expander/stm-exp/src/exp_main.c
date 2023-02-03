@@ -34,7 +34,8 @@ void write_to_register(genereric_reg_t *gen_register, uint16_t incoming_data)
 {
     char log_msg[50];
 
-    gen_register->reg_content = incoming_data; // alteracao do dado
+    gen_register->reg_content = incoming_data;
+    gen_register->op_func(gen_register->reg_content, gen_register->port_name);
 
     uint32_t i2c_transmit_msg = 0;
     i2c_msg_t exp_transmit_msg =
@@ -104,7 +105,7 @@ void i2c_request_listener(void)
 
                 if (incoming_i2c_msg.exp_register < EXP_TOTAL_REGISTERS)
                 {
-                    write_to_register(&expander_registers, incoming_i2c_msg.exp_data);
+                    write_to_register(&expander_registers[incoming_i2c_msg.exp_register], incoming_i2c_msg.exp_data);
                 }
             }
             else if (incoming_i2c_msg.rw == I2C_READ_OPERATION)
