@@ -29,7 +29,7 @@ genereric_reg_t current_scope_registers[EXP_TOTAL_REGISTERS] =
 };
 
 // HELPERS ========================================================================================================
-uint16_t long_to_short_reg(uint32_t long_value)
+static uint16_t long_to_short_reg(uint32_t long_value)
 {
     uint16_t short_value = 0x00;
 
