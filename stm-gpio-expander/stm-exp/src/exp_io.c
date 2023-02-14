@@ -62,6 +62,76 @@ static uint16_t inverted_pol_mask(uint16_t stm_read_reg, uint16_t virtual_pol_re
                       (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_0)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_0))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_0))) << EXP_IO_PIN_0);
     return pol_reg_content;
 }
+
+static uint32_t MODER_default_pins_mask(uint32_t cfg_reg)
+{
+    uint32_t cfg_reg_masked = cfg_reg;
+
+    cfg_reg_masked &= ~(TWO_DEFALT_CONFIG_MASK << SWCLK_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << SWDIO_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << I2C_SDA_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << I2C_SCL_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+
+    cfg_reg_masked |= MODER_SWCLK |
+                      (MODER_SWDIO) |
+                      (MODER_I2C_SDA) |
+                      (MODER_I2C_SCL) |
+                      (MODER_UC_INT) |
+                      (MODER_UART_RX) |
+                      (MODER_UART_TX);
+
+    return cfg_reg_masked;
+}
+
+static uint32_t PUPDR_default_pins_mask(uint32_t cfg_reg)
+{
+    uint32_t cfg_reg_masked = cfg_reg;
+
+    cfg_reg_masked &= ~(TWO_DEFALT_CONFIG_MASK << SWCLK_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << SWDIO_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << I2C_SDA_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << I2C_SCL_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+
+    cfg_reg_masked |= PUPDR_SWCLK |
+                      (PUPDR_SWDIO) |
+                      (PUPDR_I2C_SDA) |
+                      (PUPDR_I2C_SCL) |
+                      (PUPDR_UC_INT) |
+                      (PUPDR_UART_RX) |
+                      (PUPDR_UART_TX);
+
+    return cfg_reg_masked;
+}
+
+static uint32_t OTYPER_default_pins_mask(uint32_t cfg_reg)
+{
+    uint32_t cfg_reg_masked = 0;
+    cfg_reg_masked |= cfg_reg;
+
+    cfg_reg_masked &= ~(ONE_DEFALT_CONFIG_MASK << SWCLK_32_BIT_POS) &
+                      ~(ONE_DEFALT_CONFIG_MASK << SWDIO_32_BIT_POS) &
+                      ~(ONE_DEFALT_CONFIG_MASK << I2C_SDA_32_BIT_POS) &
+                      ~(ONE_DEFALT_CONFIG_MASK << I2C_SCL_32_BIT_POS) &
+                      ~(ONE_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
+                      ~(ONE_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
+                      ~(ONE_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+
+    cfg_reg_masked |= OTYPER_SWCLK |
+                      (OTYPER_SWDIO) |
+                      (OTYPER_I2C_SDA) |
+                      (OTYPER_I2C_SCL) |
+                      (OTYPER_UC_INT) |
+                      (OTYPER_UART_RX) |
+                      (OTYPER_UART_TX);
+
+    return cfg_reg_masked;
+}
 // FUNCOES DE ESCRITA DE REGISTRADOR ==============================================================================
 void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
 {
@@ -105,17 +175,10 @@ void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
                                    (direction_cfg_buffer.extended_cfg_content_1 << EXTENDED_REG_POS_1) |
                                    (direction_cfg_buffer.extended_cfg_content_0 << EXTENDED_REG_POS_0));
 
-    sprintf(log_msg, "virtual reg: ");
-    HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
-    print_register(virtual_reg);
-
-    sprintf(log_msg, "STM32 reg: ");
-    HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
-    print_register(direction_reg_cfg);
-
     switch (port)
     {
     case EXP_PORT_A:
+        direction_reg_cfg = MODER_default_pins_mask(direction_reg_cfg);
         GPIOA->MODER = direction_reg_cfg;
         break;
     case EXP_PORT_B:
@@ -132,13 +195,12 @@ void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
 void exp_out_mode_config(uint16_t virtual_reg, exp_ports_t port)
 {
     uint32_t out_mode_reg_cfg = 0;
-
     out_mode_reg_cfg = virtual_reg;
-    // TODO: tratar pinos que podem ser alterados (pinoo I2C e UART)
 
     switch (port)
     {
     case EXP_PORT_A:
+        out_mode_reg_cfg = OTYPER_default_pins_mask(out_mode_reg_cfg);
         GPIOA->OTYPER = out_mode_reg_cfg;
         break;
     case EXP_PORT_B:
@@ -231,6 +293,7 @@ void exp_in_reference_config(uint16_t virtual_reg, exp_ports_t port)
     switch (port)
     {
     case EXP_PORT_A:
+        in_ref_reg_cfg = PUPDR_default_pins_mask(in_ref_reg_cfg);
         GPIOA->PUPDR = in_ref_reg_cfg;
         break;
     case EXP_PORT_B:
@@ -242,6 +305,8 @@ void exp_in_reference_config(uint16_t virtual_reg, exp_ports_t port)
     default:
         break;
     };
+}
+
 void exp_inverted_pol_config(uint16_t virtual_reg, exp_ports_t port)
 {
     switch (port)
