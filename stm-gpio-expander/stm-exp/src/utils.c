@@ -23,3 +23,20 @@ void print_register(uint32_t reg)
     sprintf(reg_value, " - hex: %X", reg);
     HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)reg_value, strlen(reg_value), UART_TIMEOUT);
 }
+
+void print_STM_reg(uint32_t stm_reg)
+{
+    char log_msg[20];
+    sprintf(log_msg, "virtual reg: ");
+    HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
+    print_register(stm_reg);
+}
+
+void print_virtual_reg(uint32_t virtual_reg)
+{
+    virtual_reg &= 0x0000FFFF;
+    char log_msg[20];
+    sprintf(log_msg, "virtual reg: ");
+    HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
+    print_register(virtual_reg);
+}

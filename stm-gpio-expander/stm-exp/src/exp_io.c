@@ -215,6 +215,8 @@ void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
     default:
         break;
     };
+    print_STM_reg(direction_reg_cfg);
+    print_virtual_reg((uint32_t)virtual_reg);
 }
 
 void exp_out_mode_config(uint16_t virtual_reg, exp_ports_t port)
@@ -237,6 +239,8 @@ void exp_out_mode_config(uint16_t virtual_reg, exp_ports_t port)
     default:
         break;
     };
+    print_STM_reg(out_mode_reg_cfg);
+    print_virtual_reg((uint32_t)virtual_reg);
 }
 
 void exp_in_mode_config(uint16_t virtual_reg, exp_ports_t port)
@@ -275,6 +279,8 @@ void exp_in_mode_config(uint16_t virtual_reg, exp_ports_t port)
     default:
         break;
     };
+    print_STM_reg(pupdr_reg);
+    print_virtual_reg((uint32_t)virtual_reg);
 }
 
 void exp_in_reference_config(uint16_t virtual_reg, exp_ports_t port)
@@ -350,6 +356,8 @@ void exp_in_reference_config(uint16_t virtual_reg, exp_ports_t port)
     default:
         break;
     };
+    print_STM_reg(in_ref_reg_cfg);
+    print_virtual_reg((uint32_t)virtual_reg);
 }
 
 void exp_inverted_pol_config(uint16_t virtual_reg, exp_ports_t port)
@@ -368,6 +376,7 @@ void exp_inverted_pol_config(uint16_t virtual_reg, exp_ports_t port)
     default:
         break;
     };
+    print_virtual_reg((uint32_t)virtual_reg);
 }
 
 void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port)
@@ -393,6 +402,8 @@ void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port)
     default:
         break;
     };
+    print_STM_reg(state_config);
+    print_virtual_reg((uint32_t)virtual_reg);
 }
 
 // FUNCOES DE LEITURA =============================================================================================
@@ -407,22 +418,20 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
         {
         case EXP_PORT_A:
             r_reg_32 = GPIOA->MODER;
-            print_register(r_reg_32);
             r_reg_16 = long_to_short_reg(r_reg_32);
             break;
         case EXP_PORT_B:
             r_reg_32 = GPIOB->MODER;
-            print_register(r_reg_32);
             r_reg_16 = long_to_short_reg(r_reg_32);
             break;
         case EXP_PORT_C:
             r_reg_32 = GPIOC->MODER;
-            print_register(r_reg_32);
             r_reg_16 = long_to_short_reg(r_reg_32);
             break;
         default:
             break;
         };
+        print_STM_reg(r_reg_32);
     }
     else if ((reg_name >= EXP_IO_OUTPUT_MODE_A_REG) && (reg_name <= EXP_IO_OUTPUT_MODE_C_REG)) // REGISTRADORES DE MODO DE SAIDA - reg de 16 bits
     {
@@ -440,6 +449,7 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
         default:
             break;
         };
+        print_virtual_reg((uint32_t)r_reg_16);
     }
     else if ((reg_name >= EXP_IO_INPUT_MODE_A_REG) && (reg_name <= EXP_IO_INPUT_MODE_C_REG)) // REGISTRADORES DE MODO DE ENTRADA reg de 16 bits
     {
@@ -457,6 +467,7 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
         default:
             break;
         };
+        print_virtual_reg((uint32_t)r_reg_16);
     }
     else if ((reg_name >= EXP_IO_INPUT_REF_A_REG) && (reg_name <= EXP_IO_INPUT_REF_C_REG)) // REGISTRADORES DE PULL UP E PULL DOWN reg de 32 bits
     {
@@ -464,16 +475,20 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
         {
         case EXP_PORT_A:
             r_reg_16 = current_scope_registers[EXP_IO_INPUT_REF_A_REG].reg_content;
+            print_STM_reg(GPIOA->PUPDR);
             break;
         case EXP_PORT_B:
             r_reg_16 = current_scope_registers[EXP_IO_INPUT_REF_B_REG].reg_content;
+            print_STM_reg(GPIOB->PUPDR);
             break;
         case EXP_PORT_C:
             r_reg_16 = current_scope_registers[EXP_IO_INPUT_REF_C_REG].reg_content;
+            print_STM_reg(GPIOC->PUPDR);
             break;
         default:
             break;
         };
+        print_virtual_reg((uint32_t)r_reg_16);
     }
     else if ((reg_name >= EXP_IO_INPUT_INVERT_POL_A_REG) && (reg_name <= EXP_IO_INPUT_INVERT_POL_C_REG)) // REGISTRADORES DE INVERSÃO DE POLARIDADE reg de 16 bits
     {
@@ -491,6 +506,7 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
         default:
             break;
         };
+        print_virtual_reg((uint32_t)r_reg_16);
     }
     else if ((reg_name >= EXP_IO_GPIO_A_REG) && (reg_name <= EXP_IO_GPIO_C_REG)) // REGISTRADORES DE GPIO reg de 32 bits
     {
@@ -508,6 +524,7 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
         default:
             break;
         };
+        print_virtual_reg((uint32_t)r_reg_16);
     }
     return r_reg_16;
 }
