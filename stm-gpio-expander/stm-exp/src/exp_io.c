@@ -329,9 +329,9 @@ void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port)
 {
     uint32_t state_config = 0;
 
-    for (int i = 15; i >= 0; i--)
+    for (int curr_BSRR_bit = 15; curr_BSRR_bit >= 0; curr_BSRR_bit--)
     {
-        ((virtual_reg >> i) & 1) ? SLAVE_SET_BIT(state_config, i) : SLAVE_SET_BIT(state_config, i + 16);
+        ((virtual_reg >> curr_BSRR_bit) & 1) ? SLAVE_SET_BIT(state_config, curr_BSRR_bit) : SLAVE_SET_BIT(state_config, curr_BSRR_bit + 16);
     }
 
     switch (port)
