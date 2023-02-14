@@ -41,6 +41,27 @@ static uint16_t long_to_short_reg(uint32_t long_value)
     return short_value;
 }
 
+static uint16_t inverted_pol_mask(uint16_t stm_read_reg, uint16_t virtual_pol_reg)
+{
+    uint16_t pol_reg_content = 0;
+    pol_reg_content = (uint16_t)(((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_15)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_15))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_15))) << EXP_IO_PIN_15) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_14)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_14))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_14))) << EXP_IO_PIN_14) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_13)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_13))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_13))) << EXP_IO_PIN_13) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_12)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_12))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_12))) << EXP_IO_PIN_12) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_11)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_11))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_11))) << EXP_IO_PIN_11) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_10)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_10))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_10))) << EXP_IO_PIN_10) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_9)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_9))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_9))) << EXP_IO_PIN_9) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_8)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_8))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_8))) << EXP_IO_PIN_8) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_7)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_7))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_7))) << EXP_IO_PIN_7) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_6)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_6))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_6))) << EXP_IO_PIN_6) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_5)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_5))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_5))) << EXP_IO_PIN_5) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_4)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_4))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_4))) << EXP_IO_PIN_4) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_3)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_3))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_3))) << EXP_IO_PIN_3) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_2)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_2))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_2))) << EXP_IO_PIN_2) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_1)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_1))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_1))) << EXP_IO_PIN_1) |
+                      (((SLAVE_READ_BIT(virtual_pol_reg, EXP_IO_PIN_0)) ? (1 ^ (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_0))) : (SLAVE_READ_BIT(stm_read_reg, EXP_IO_PIN_0))) << EXP_IO_PIN_0);
+    return pol_reg_content;
+}
 // FUNCOES DE ESCRITA DE REGISTRADOR ==============================================================================
 void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
 {
@@ -221,6 +242,22 @@ void exp_in_reference_config(uint16_t virtual_reg, exp_ports_t port)
     default:
         break;
     };
+void exp_inverted_pol_config(uint16_t virtual_reg, exp_ports_t port)
+{
+    switch (port)
+    {
+    case EXP_PORT_A:
+        current_scope_registers[EXP_IO_INPUT_INVERT_POL_A_REG].reg_content = virtual_reg;
+        break;
+    case EXP_PORT_B:
+        current_scope_registers[EXP_IO_INPUT_INVERT_POL_B_REG].reg_content = virtual_reg;
+        break;
+    case EXP_PORT_C:
+        current_scope_registers[EXP_IO_INPUT_INVERT_POL_C_REG].reg_content = virtual_reg;
+        break;
+    default:
+        break;
+    };
 }
 
 void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port)
@@ -328,18 +365,35 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
             break;
         };
     }
+    else if ((reg_name >= EXP_IO_INPUT_INVERT_POL_A_REG) && (reg_name <= EXP_IO_INPUT_INVERT_POL_C_REG)) // REGISTRADORES DE INVERSÃO DE POLARIDADE reg de 16 bits
+    {
+        switch (port)
+        {
+        case EXP_PORT_A:
+            r_reg_16 = current_scope_registers[EXP_IO_INPUT_INVERT_POL_A_REG].reg_content;
+            break;
+        case EXP_PORT_B:
+            r_reg_16 = current_scope_registers[EXP_IO_INPUT_INVERT_POL_B_REG].reg_content;
+            break;
+        case EXP_PORT_C:
+            r_reg_16 = current_scope_registers[EXP_IO_INPUT_INVERT_POL_C_REG].reg_content;
+            break;
+        default:
+            break;
+        };
+    }
     else if ((reg_name >= EXP_IO_GPIO_A_REG) && (reg_name <= EXP_IO_GPIO_C_REG)) // REGISTRADORES DE GPIO reg de 32 bits
     {
         switch (port)
         {
         case EXP_PORT_A:
-            r_reg_16 = GPIOA->IDR;
+            r_reg_16 = inverted_pol_mask((uint16_t)GPIOA->IDR, current_scope_registers[EXP_IO_INPUT_INVERT_POL_A_REG].reg_content);
             break;
         case EXP_PORT_B:
-            r_reg_16 = GPIOB->IDR;
+            r_reg_16 = inverted_pol_mask((uint16_t)GPIOB->IDR, current_scope_registers[EXP_IO_INPUT_INVERT_POL_B_REG].reg_content);
             break;
         case EXP_PORT_C:
-            r_reg_16 = GPIOC->IDR;
+            r_reg_16 = inverted_pol_mask((uint16_t)GPIOC->IDR, current_scope_registers[EXP_IO_INPUT_INVERT_POL_C_REG].reg_content);
             break;
         default:
             break;
