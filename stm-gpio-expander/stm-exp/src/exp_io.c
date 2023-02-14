@@ -132,6 +132,31 @@ static uint32_t OTYPER_default_pins_mask(uint32_t cfg_reg)
 
     return cfg_reg_masked;
 }
+
+static uint32_t config_floating_state(uint32_t stm_reg, uint64_t virtual_reg)
+{
+    uint32_t pupr_reg = stm_reg;
+
+    pupr_reg &= ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_0) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_0 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_1) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_1 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_2) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_2 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_3) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_3 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_4) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_4 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_5) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_5 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_6) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_6 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_7) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_7 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_8) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_8 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_9) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_9 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_10) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_10 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_11) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_11 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_12) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_12 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_13) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_13 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_14) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_14 * 2)) : 0xFFFFFFFF) &
+                ((SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_15) == EXP_FLOATING_INPUT) ? ~(TWO_DEFALT_CONFIG_MASK << (EXP_IO_PIN_15 * 2)) : 0xFFFFFFFF);
+
+    return pupr_reg;
+}
+
 // FUNCOES DE ESCRITA DE REGISTRADOR ==============================================================================
 void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
 {
@@ -216,16 +241,36 @@ void exp_out_mode_config(uint16_t virtual_reg, exp_ports_t port)
 
 void exp_in_mode_config(uint16_t virtual_reg, exp_ports_t port)
 {
+    uint32_t pupdr_reg;
+
     switch (port)
     {
     case EXP_PORT_A:
+        pupdr_reg = GPIOA->PUPDR;
         current_scope_registers[EXP_IO_INPUT_MODE_A_REG].reg_content = virtual_reg;
+        current_scope_registers[EXP_IO_INPUT_MODE_A_REG].reg_content |= (1 << SWCLK_16_BIT_POS) | (1 << SWDIO_16_BIT_POS); // seta pinos de SWDIO e SWCLK
+        current_scope_registers[EXP_IO_INPUT_MODE_A_REG].reg_content &= ~(1 << I2C_SDA_16_BIT_POS) &                       // reseta pinos de I2C, UART e interrupção
+                                                                        ~(1 << I2C_SCL_16_BIT_POS) &
+                                                                        ~(1 << UC_INT_16_BIT_POS) &
+                                                                        ~(1 << UART_RX_16_BIT_POS) &
+                                                                        ~(1 << UART_TX_16_BIT_POS);
+        pupdr_reg = config_floating_state(pupdr_reg, current_scope_registers[EXP_IO_INPUT_MODE_A_REG].reg_content);     // reseta os pinos que deve ser flutuantes
+        GPIOA->PUPDR = pupdr_reg;   // aplica a modifica no registrador do STM32
         break;
+
     case EXP_PORT_B:
+        pupdr_reg = GPIOB->PUPDR;
         current_scope_registers[EXP_IO_INPUT_MODE_B_REG].reg_content = virtual_reg;
+        pupdr_reg = config_floating_state(pupdr_reg, current_scope_registers[EXP_IO_INPUT_MODE_B_REG].reg_content);
+        GPIOB->PUPDR = pupdr_reg;
         break;
+
     case EXP_PORT_C:
+        pupdr_reg = GPIOC->PUPDR;
         current_scope_registers[EXP_IO_INPUT_MODE_C_REG].reg_content = virtual_reg;
+        pupdr_reg = config_floating_state(pupdr_reg, current_scope_registers[EXP_IO_INPUT_MODE_C_REG].reg_content);
+        GPIOC->PUPDR = pupdr_reg;
+
         break;
     default:
         break;
