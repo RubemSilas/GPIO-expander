@@ -68,6 +68,9 @@
 #define PUPDR_UART_RX (0 << UART_RX_32_BIT_POS) //(0 - no pull-up, pull-down)
 #define PUPDR_UART_TX (0 << UART_TX_32_BIT_POS) //(0 - no pull-up, pull-down)
 
+#define IT_SET_UC_PIN_POS (8)
+#define IT_RESET_UC_PIN_POS (24)
+
 #define UART_HANDLER huart2
 #define I2C_HANDLER hi2c1
 
@@ -137,6 +140,19 @@ typedef enum
     EXP_IO_GPIO_A_REG,
     EXP_IO_GPIO_B_REG,
     EXP_IO_GPIO_C_REG,
+
+    // =============== EXP IT ===============
+    EXP_IO_PORT_A_INT_MASK,
+    EXP_IO_PORT_B_INT_MASK,
+    EXP_IO_PORT_C_INT_MASK,
+
+    EXP_IO_PORT_A_INT_ENABLE,
+    EXP_IO_PORT_B_INT_ENABLE,
+    EXP_IO_PORT_C_INT_ENABLE,
+
+    EXP_IO_PORT_A_INT_CAPTURE,
+    EXP_IO_PORT_B_INT_CAPTURE,
+    EXP_IO_PORT_C_INT_CAPTURE,
 
     EXP_TOTAL_REGISTERS,
 } exp_registers_addr_t;

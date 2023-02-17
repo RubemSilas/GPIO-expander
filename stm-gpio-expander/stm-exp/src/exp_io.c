@@ -26,6 +26,19 @@ genereric_reg_t current_scope_registers[EXP_TOTAL_REGISTERS] =
         {.reg_name = EXP_IO_GPIO_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_gpio_state_config, .reg_content = 0},
         {.reg_name = EXP_IO_GPIO_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_gpio_state_config, .reg_content = 0},
         {.reg_name = EXP_IO_GPIO_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_gpio_state_config, .reg_content = 0},
+
+        // IT REGISTERS ===================================================================================================
+        {.reg_name = EXP_IO_PORT_A_INT_MASK, .port_name = EXP_PORT_A, .op_func = &exp_it_mask_config, .reg_content = 0},
+        {.reg_name = EXP_IO_PORT_B_INT_MASK, .port_name = EXP_PORT_B, .op_func = &exp_it_mask_config, .reg_content = 0},
+        {.reg_name = EXP_IO_PORT_C_INT_MASK, .port_name = EXP_PORT_C, .op_func = &exp_it_mask_config, .reg_content = 0},
+
+        {.reg_name = EXP_IO_PORT_A_INT_ENABLE, .port_name = EXP_PORT_A, .op_func = &exp_it_enable_config, .reg_content = 0},
+        {.reg_name = EXP_IO_PORT_B_INT_ENABLE, .port_name = EXP_PORT_B, .op_func = &exp_it_enable_config, .reg_content = 0},
+        {.reg_name = EXP_IO_PORT_C_INT_ENABLE, .port_name = EXP_PORT_C, .op_func = &exp_it_enable_config, .reg_content = 0},
+
+        {.reg_name = EXP_IO_PORT_A_INT_CAPTURE, .port_name = EXP_PORT_A, .op_func = NULL, .reg_content = 0},
+        {.reg_name = EXP_IO_PORT_B_INT_CAPTURE, .port_name = EXP_PORT_B, .op_func = NULL, .reg_content = 0},
+        {.reg_name = EXP_IO_PORT_C_INT_CAPTURE, .port_name = EXP_PORT_C, .op_func = NULL, .reg_content = 0},
 };
 
 // HELPERS ========================================================================================================
@@ -180,6 +193,15 @@ static uint32_t config_floating_state(uint32_t stm_reg, uint64_t virtual_reg)
     return pupr_reg;
 }
 
+static void exp_set_uc_int_pin(void)
+{
+    GPIOA->BSRR |= (1 << IT_SET_UC_PIN_POS);
+}
+
+static void exp_reset_uc_int_pin(void)
+{
+    GPIOA->BSRR |= (1 << IT_RESET_UC_PIN_POS);
+}
 // FUNCOES DE ESCRITA DE REGISTRADOR ==============================================================================
 void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
 {
@@ -474,6 +496,101 @@ void exp_gpio_state_config(uint16_t virtual_reg, exp_ports_t port)
     print_virtual_reg((uint32_t)virtual_reg);
 }
 
+// FUNCOES DE ESCRITA PARA INTERRUPCAO ============================================================================
+void exp_it_mask_config(uint16_t virtual_reg, exp_ports_t port)
+{
+    switch (port)
+    {
+    case EXP_PORT_A:
+        current_scope_registers[EXP_IO_PORT_A_INT_MASK].reg_content = virtual_reg;
+        break;
+    case EXP_PORT_B:
+        current_scope_registers[EXP_IO_PORT_B_INT_MASK].reg_content = virtual_reg;
+        break;
+    case EXP_PORT_C:
+        current_scope_registers[EXP_IO_PORT_C_INT_MASK].reg_content = virtual_reg;
+        break;
+    default:
+        break;
+    };
+    print_virtual_reg((uint32_t)virtual_reg);
+}
+
+void exp_it_enable_config(uint16_t virtual_reg, exp_ports_t port)
+{
+    uint16_t it_en_buffer;
+
+    switch (port)
+    {
+    case EXP_PORT_A:
+        it_en_buffer = virtual_reg & (~(current_scope_registers[EXP_IO_DIR_A_REG].reg_content)); // elimina pinos conifigurados como saida na porta A
+        current_scope_registers[EXP_IO_PORT_A_INT_ENABLE].reg_content = it_en_buffer;
+        break;
+    case EXP_PORT_B:
+        it_en_buffer = virtual_reg & (~(current_scope_registers[EXP_IO_DIR_B_REG].reg_content)); // elimina pinos conifigurados como saida na porta B
+        current_scope_registers[EXP_IO_PORT_B_INT_ENABLE].reg_content = it_en_buffer;
+        break;
+    case EXP_PORT_C:
+        it_en_buffer = virtual_reg & (~(current_scope_registers[EXP_IO_DIR_C_REG].reg_content)); // elimina pinos conifigurados como saida na porta C
+        current_scope_registers[EXP_IO_PORT_C_INT_ENABLE].reg_content = it_en_buffer;
+        break;
+    default:
+        break;
+    };
+    print_virtual_reg((uint32_t)it_en_buffer);
+}
+
+void exp_interruption_detector(void)
+{
+    uint16_t it_virtual_reg_value_A;
+    uint16_t it_virtual_reg_value_B;
+    uint16_t it_virtual_reg_value_C;
+    uint16_t it_capture_A;
+    uint16_t it_capture_B;
+    uint16_t it_capture_C;
+    char it_msg[60];
+    sprintf(it_msg, "IT detectado!!\r\n");
+
+    // atualizacao dos estados de GPIO
+    current_scope_registers[EXP_IO_GPIO_A_REG].reg_content = (uint16_t)(0x0000FFFF & GPIOA->IDR);
+    current_scope_registers[EXP_IO_GPIO_B_REG].reg_content = (uint16_t)(0x0000FFFF & GPIOB->IDR);
+    current_scope_registers[EXP_IO_GPIO_C_REG].reg_content = (uint16_t)(0x0000FFFF & GPIOC->IDR);
+
+    if (current_scope_registers[EXP_IO_PORT_A_INT_ENABLE].reg_content)
+    {
+        it_virtual_reg_value_A = (current_scope_registers[EXP_IO_GPIO_A_REG].reg_content & current_scope_registers[EXP_IO_PORT_A_INT_ENABLE].reg_content); // (GPIO & enable)
+        it_capture_A = (it_virtual_reg_value_A ^ current_scope_registers[EXP_IO_PORT_A_INT_MASK].reg_content);                                             // (GPIO mascarado ^ it_mask)
+        if (it_capture_A)
+        {
+            current_scope_registers[EXP_IO_PORT_A_INT_CAPTURE].reg_content = it_capture_A;
+            exp_set_uc_int_pin();
+            HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)it_msg, strlen(it_msg), UART_TIMEOUT);
+        }
+    }
+    if (current_scope_registers[EXP_IO_PORT_B_INT_ENABLE].reg_content)
+    {
+        it_virtual_reg_value_B = (current_scope_registers[EXP_IO_GPIO_B_REG].reg_content & current_scope_registers[EXP_IO_PORT_B_INT_ENABLE].reg_content); // (GPIO & enable)
+        it_capture_B = (it_virtual_reg_value_B ^ current_scope_registers[EXP_IO_PORT_B_INT_MASK].reg_content);                                             // (GPIO mascarado ^ it_mask)
+        if (it_capture_B)
+        {
+            current_scope_registers[EXP_IO_PORT_B_INT_CAPTURE].reg_content = it_capture_B;
+            exp_set_uc_int_pin();
+            HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)it_msg, strlen(it_msg), UART_TIMEOUT);
+        }
+    }
+    if (current_scope_registers[EXP_IO_PORT_C_INT_ENABLE].reg_content)
+    {
+        it_virtual_reg_value_C = (current_scope_registers[EXP_IO_GPIO_C_REG].reg_content & current_scope_registers[EXP_IO_PORT_C_INT_ENABLE].reg_content); // (GPIO & enable)
+        it_capture_C = (it_virtual_reg_value_C ^ current_scope_registers[EXP_IO_PORT_C_INT_MASK].reg_content);                                             // (GPIO mascarado ^ it_mask)
+        if (it_capture_C)
+        {
+            current_scope_registers[EXP_IO_PORT_C_INT_CAPTURE].reg_content = it_capture_C;
+            exp_set_uc_int_pin();
+            HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)it_msg, strlen(it_msg), UART_TIMEOUT);
+        }
+    }
+}
+
 // FUNCOES DE LEITURA =============================================================================================
 uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
 {
@@ -594,10 +711,77 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
         };
         print_virtual_reg((uint32_t)r_reg_16);
     }
+    else if ((reg_name >= EXP_IO_PORT_A_INT_MASK) && (reg_name <= EXP_IO_PORT_C_INT_MASK))
+    {
+        switch (port)
+        {
+        case EXP_PORT_A:
+            r_reg_16 = current_scope_registers[EXP_IO_PORT_A_INT_MASK].reg_content;
+            break;
+        case EXP_PORT_B:
+            r_reg_16 = current_scope_registers[EXP_IO_PORT_B_INT_MASK].reg_content;
+            break;
+        case EXP_PORT_C:
+            r_reg_16 = current_scope_registers[EXP_IO_PORT_C_INT_MASK].reg_content;
+            break;
+        default:
+            break;
+        };
+        print_virtual_reg((uint32_t)r_reg_16);
+    }
+    else if ((reg_name >= EXP_IO_PORT_A_INT_ENABLE) && (reg_name <= EXP_IO_PORT_C_INT_ENABLE))
+    {
+        switch (port)
+        {
+        case EXP_PORT_A:
+            r_reg_16 = current_scope_registers[EXP_IO_PORT_A_INT_ENABLE].reg_content;
+            break;
+        case EXP_PORT_B:
+            r_reg_16 = current_scope_registers[EXP_IO_PORT_B_INT_ENABLE].reg_content;
+            break;
+        case EXP_PORT_C:
+            r_reg_16 = current_scope_registers[EXP_IO_PORT_C_INT_ENABLE].reg_content;
+            break;
+        default:
+            break;
+        };
+        print_virtual_reg((uint32_t)r_reg_16);
+    }
+    else if ((reg_name >= EXP_IO_PORT_A_INT_CAPTURE) && (reg_name <= EXP_IO_PORT_C_INT_CAPTURE))
+    {
+        switch (port)
+        {
+        case EXP_PORT_A:
+            r_reg_16 = current_scope_registers[EXP_IO_PORT_A_INT_CAPTURE].reg_content;
+            exp_reset_uc_int_pin();
+            break;
+        case EXP_PORT_B:
+            r_reg_16 = current_scope_registers[EXP_IO_PORT_B_INT_CAPTURE].reg_content;
+            exp_reset_uc_int_pin();
+            break;
+        case EXP_PORT_C:
+            r_reg_16 = current_scope_registers[EXP_IO_PORT_C_INT_CAPTURE].reg_content;
+            exp_reset_uc_int_pin();
+            break;
+        default:
+            break;
+        };
+        print_virtual_reg((uint32_t)r_reg_16);
+    }
     return r_reg_16;
 }
 
 // INICIALIZACAO ==================================================================================================
+void init_uc_it_pin(void)
+{
+    // pino UC_IT em modo de saida
+    GPIOA->MODER &= ~(3 << 16);
+    GPIOA->MODER |= (1 << 16);
+
+    // pino UC_IT em nivel baixo
+    GPIOA->BSRR |= (1 << 24);
+}
+
 genereric_reg_t *gpio_setup_cfg(void)
 {
     return &current_scope_registers[0];
