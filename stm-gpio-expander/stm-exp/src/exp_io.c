@@ -19,13 +19,13 @@ genereric_reg_t current_scope_registers[EXP_TOTAL_REGISTERS] =
         {.reg_name = EXP_IO_INPUT_REF_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_in_reference_config, .reg_content = 0},
         {.reg_name = EXP_IO_INPUT_REF_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_in_reference_config, .reg_content = 0},
 
-        {.reg_name = EXP_IO_INPUT_INVERT_POL_A_REG, .port_name = EXP_PORT_A, .reg_content = 0},
-        {.reg_name = EXP_IO_INPUT_INVERT_POL_B_REG, .port_name = EXP_PORT_B, .reg_content = 0},
-        {.reg_name = EXP_IO_INPUT_INVERT_POL_C_REG, .port_name = EXP_PORT_C, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_INVERT_POL_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_inverted_pol_config, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_INVERT_POL_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_inverted_pol_config, .reg_content = 0},
+        {.reg_name = EXP_IO_INPUT_INVERT_POL_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_inverted_pol_config, .reg_content = 0},
 
-        {.reg_name = EXP_IO_GPIO_A_REG, .op_func = &exp_gpio_state_config, .port_name = EXP_PORT_A, .reg_content = 0},
-        {.reg_name = EXP_IO_GPIO_B_REG, .op_func = &exp_gpio_state_config, .port_name = EXP_PORT_B, .reg_content = 0},
-        {.reg_name = EXP_IO_GPIO_C_REG, .op_func = &exp_gpio_state_config, .port_name = EXP_PORT_C, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_A_REG, .port_name = EXP_PORT_A, .op_func = &exp_gpio_state_config, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_B_REG, .port_name = EXP_PORT_B, .op_func = &exp_gpio_state_config, .reg_content = 0},
+        {.reg_name = EXP_IO_GPIO_C_REG, .port_name = EXP_PORT_C, .op_func = &exp_gpio_state_config, .reg_content = 0},
 };
 
 // HELPERS ========================================================================================================
@@ -160,7 +160,6 @@ static uint32_t config_floating_state(uint32_t stm_reg, uint64_t virtual_reg)
 // FUNCOES DE ESCRITA DE REGISTRADOR ==============================================================================
 void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
 {
-    char log_msg[20];
     uint32_t direction_reg_cfg = 0;
     extended_reg_content_t direction_cfg_buffer =
         {
