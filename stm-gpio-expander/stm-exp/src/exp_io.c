@@ -532,7 +532,7 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port)
 // INICIALIZACAO ==================================================================================================
 genereric_reg_t *gpio_setup_cfg(void)
 {
-    return &current_scope_registers;
+    return &current_scope_registers[0];
 }
 
 void exp_init_gpio_clks(void)
