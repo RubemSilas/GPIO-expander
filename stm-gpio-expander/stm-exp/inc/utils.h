@@ -11,8 +11,8 @@
 #include "usart.h"
 
 // SYSTEM PIN PARAMETERS
-#define TWO_DEFALT_CONFIG_MASK  0x03
-#define ONE_DEFALT_CONFIG_MASK  0x01
+#define TWO_DEFALT_CONFIG_MASK (0x03)
+#define ONE_DEFALT_CONFIG_MASK (0x01)
 
 // DEFAULT PIN CONFIG REG POSITION
 #define SWCLK_32_BIT_POS (28)
@@ -33,31 +33,32 @@
 
 // DEFAULT PIN CONFIG REG VALUES
 // 32 bits
-#define MODER_SWCLK (2 << 28)   //(10 - alternative function mode)
-#define MODER_SWDIO (2 << 26)   //(10 - alternative function mode)
-#define MODER_I2C_SDA (2 << 20) //(10 - alternative function mode)
-#define MODER_I2C_SCL (2 << 18) //(10 - alternative function mode)
-#define MODER_UC_INT (1 << 16)  //(01 - General purpose output mode)
-#define MODER_UART_RX (2 << 6)  //(10 - alternative function mode)
-#define MODER_UART_TX (2 << 4)  //(10 - alternative function mode)
+#define MODER_SWCLK (2 << SWCLK_32_BIT_POS)     //(10 - alternative function mode)
+#define MODER_SWDIO (2 << SWDIO_32_BIT_POS)     //(10 - alternative function mode)
+#define MODER_I2C_SDA (2 << I2C_SDA_32_BIT_POS) //(10 - alternative function mode)
+#define MODER_I2C_SCL (2 << I2C_SCL_32_BIT_POS) //(10 - alternative function mode)
+#define MODER_UC_INT (1 << UC_INT_32_BIT_POS)   //(01 - General purpose output mode)
+#define MODER_UART_RX (2 << UART_RX_32_BIT_POS) //(10 - alternative function mode)
+#define MODER_UART_TX (2 << UART_TX_32_BIT_POS) //(10 - alternative function mode)
+
 
 // 16 bits
-#define OTYPER_SWCLK (0 << 14)   //(0 - output push-pull)
-#define OTYPER_SWDIO (0 << 13)   //(0 - output push-pull)
-#define OTYPER_I2C_SDA (1 << 10) //(1 - output open-drain)
-#define OTYPER_I2C_SCL (1 << 9)  //(1 - output open-drain)
-#define OTYPER_UC_INT (0 << 8)   //(0 - output push-pull)
-#define OTYPER_UART_RX (0 << 3)  //(0 - output push-pull)
-#define OTYPER_UART_TX (0 << 2)  //(0 - output push-pull)
+#define OTYPER_SWCLK (0 << SWCLK_16_BIT_POS)     //(0 - output push-pull)
+#define OTYPER_SWDIO (0 << SWDIO_16_BIT_POS)     //(0 - output push-pull)
+#define OTYPER_I2C_SDA (1 << I2C_SDA_16_BIT_POS) //(1 - output open-drain)
+#define OTYPER_I2C_SCL (1 << I2C_SCL_16_BIT_POS) //(1 - output open-drain)
+#define OTYPER_UC_INT (0 << UC_INT_16_BIT_POS)   //(0 - output push-pull)
+#define OTYPER_UART_RX (0 << UART_RX_16_BIT_POS) //(0 - output push-pull)
+#define OTYPER_UART_TX (0 << UART_TX_16_BIT_POS) //(0 - output push-pull)
 
 // 32 bits
-#define PUPDR_SWCLK (2 << 28)   //(10 - pull-down)
-#define PUPDR_SWDIO (1 << 26)   //(01 - pull-up)
-#define PUPDR_I2C_SDA (0 << 20) //(0 - no pull-up, pull-down)
-#define PUPDR_I2C_SCL (0 << 18) //(0 - no pull-up, pull-down)
-#define PUPDR_UC_INT (0 << 16)  //(0 - no pull-up, pull-down)
-#define PUPDR_UART_RX (0 << 6)  //(0 - no pull-up, pull-down)
-#define PUPDR_UART_TX (0 << 4)  //(0 - no pull-up, pull-down)
+#define PUPDR_SWCLK (2 << SWCLK_32_BIT_POS)     //(10 - pull-down)
+#define PUPDR_SWDIO (1 << SWDIO_32_BIT_POS)     //(01 - pull-up)
+#define PUPDR_I2C_SDA (0 << I2C_SDA_32_BIT_POS) //(0 - no pull-up, pull-down)
+#define PUPDR_I2C_SCL (0 << I2C_SCL_32_BIT_POS) //(0 - no pull-up, pull-down)
+#define PUPDR_UC_INT (0 << UC_INT_32_BIT_POS)   //(0 - no pull-up, pull-down)
+#define PUPDR_UART_RX (0 << UART_RX_32_BIT_POS) //(0 - no pull-up, pull-down)
+#define PUPDR_UART_TX (0 << UART_TX_32_BIT_POS) //(0 - no pull-up, pull-down)
 
 #define UART_HANDLER huart2
 #define I2C_HANDLER hi2c1
