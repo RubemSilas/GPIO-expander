@@ -782,6 +782,33 @@ void init_uc_it_pin(void)
     GPIOA->BSRR |= (1 << 24);
 }
 
+void load_init_configs(genereric_reg_t *expander_registers)
+{
+    exp_direction_config(expander_registers[EXP_IO_DIR_A_REG].reg_content, EXP_PORT_A);
+    exp_direction_config(expander_registers[EXP_IO_DIR_B_REG].reg_content, EXP_PORT_B);
+    exp_direction_config(expander_registers[EXP_IO_DIR_C_REG].reg_content, EXP_PORT_C);
+
+    exp_out_mode_config(expander_registers[EXP_IO_OUTPUT_MODE_A_REG].reg_content, EXP_PORT_A);
+    exp_out_mode_config(expander_registers[EXP_IO_OUTPUT_MODE_B_REG].reg_content, EXP_PORT_B);
+    exp_out_mode_config(expander_registers[EXP_IO_OUTPUT_MODE_C_REG].reg_content, EXP_PORT_C);
+
+    exp_in_mode_config(expander_registers[EXP_IO_INPUT_MODE_A_REG].reg_content, EXP_PORT_A);
+    exp_in_mode_config(expander_registers[EXP_IO_INPUT_MODE_B_REG].reg_content, EXP_PORT_B);
+    exp_in_mode_config(expander_registers[EXP_IO_INPUT_MODE_C_REG].reg_content, EXP_PORT_C);
+
+    exp_in_reference_config(expander_registers[EXP_IO_INPUT_REF_A_REG].reg_content, EXP_PORT_A);
+    exp_in_reference_config(expander_registers[EXP_IO_INPUT_REF_B_REG].reg_content, EXP_PORT_B);
+    exp_in_reference_config(expander_registers[EXP_IO_INPUT_REF_C_REG].reg_content, EXP_PORT_C);
+
+    exp_inverted_pol_config(expander_registers[EXP_IO_INPUT_INVERT_POL_A_REG].reg_content, EXP_PORT_A);
+    exp_inverted_pol_config(expander_registers[EXP_IO_INPUT_INVERT_POL_B_REG].reg_content, EXP_PORT_B);
+    exp_inverted_pol_config(expander_registers[EXP_IO_INPUT_INVERT_POL_C_REG].reg_content, EXP_PORT_C);
+
+    exp_gpio_state_config(expander_registers[EXP_IO_GPIO_A_REG].reg_content, EXP_PORT_A);
+    exp_gpio_state_config(expander_registers[EXP_IO_GPIO_B_REG].reg_content, EXP_PORT_B);
+    exp_gpio_state_config(expander_registers[EXP_IO_GPIO_C_REG].reg_content, EXP_PORT_C);
+}
+
 genereric_reg_t *gpio_setup_cfg(void)
 {
     return &current_scope_registers[0];

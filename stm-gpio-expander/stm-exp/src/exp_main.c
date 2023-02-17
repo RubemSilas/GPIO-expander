@@ -61,6 +61,7 @@ void i2c_request_listener(void)
 
     genereric_reg_t *expander_registers = gpio_setup_cfg();
     exp_init_gpio_clks();
+    load_init_configs(expander_registers);
     init_uc_it_pin();
 
     uint32_t rqst_buffer;

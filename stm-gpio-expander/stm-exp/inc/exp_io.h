@@ -116,6 +116,7 @@ uint16_t read_stm_reg(exp_registers_addr_t reg_name, exp_ports_t port);
 
 // INICIALIZACAO
 void init_uc_it_pin(void);
+void load_init_configs(genereric_reg_t *expander_registers);
 genereric_reg_t *gpio_setup_cfg(void);
 void exp_init_gpio_clks(void);
 
