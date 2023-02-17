@@ -27,7 +27,7 @@ void print_register(uint32_t reg)
 void print_STM_reg(uint32_t stm_reg)
 {
     char log_msg[20];
-    sprintf(log_msg, "virtual reg: ");
+    sprintf(log_msg, "STM reg: ");
     HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
     print_register(stm_reg);
 }
