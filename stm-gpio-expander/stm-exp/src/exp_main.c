@@ -80,7 +80,7 @@ void i2c_request_listener(void)
                 sprintf(log_msg, ">>> REQUISICAO DE ESCRITA\r\n");
                 HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
 
-                if (incoming_i2c_msg.exp_register < EXP_TOTAL_REGISTERS)
+                if (incoming_i2c_msg.exp_register <= EXP_IO_PORT_C_INT_ENABLE)
                 {
                     write_to_register(&expander_registers[incoming_i2c_msg.exp_register], incoming_i2c_msg.exp_data);
                 }
