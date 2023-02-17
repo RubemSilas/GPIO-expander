@@ -41,6 +41,14 @@
 #define MODER_UART_RX (2 << UART_RX_32_BIT_POS) //(10 - alternative function mode)
 #define MODER_UART_TX (2 << UART_TX_32_BIT_POS) //(10 - alternative function mode)
 
+// 32 bits
+#define OSPEEDR_SWCLK (1 << SWCLK_32_BIT_POS)     // (01 - Very high speed)
+#define OSPEEDR_SWDIO (3 << SWDIO_32_BIT_POS)     // (11 - Very high speed)
+#define OSPEEDR_I2C_SDA (1 << I2C_SDA_32_BIT_POS) // (01 - Low speed)
+#define OSPEEDR_I2C_SCL (1 << I2C_SCL_32_BIT_POS) // (01 - Low speed)
+#define OSPEEDR_UC_INT (1 << UC_INT_32_BIT_POS)   // (01 - Low speed)
+#define OSPEEDR_UART_RX (1 << UART_RX_32_BIT_POS) // (01 - Low speed)
+#define OSPEEDR_UART_TX (1 << UART_TX_32_BIT_POS) // (01 - Low speed)
 
 // 16 bits
 #define OTYPER_SWCLK (0 << SWCLK_16_BIT_POS)     //(0 - output push-pull)

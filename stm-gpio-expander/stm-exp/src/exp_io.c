@@ -86,6 +86,29 @@ static uint32_t MODER_default_pins_mask(uint32_t cfg_reg)
     return cfg_reg_masked;
 }
 
+static uint32_t OSPEEDR_default_pins_mask(uint32_t cfg_reg)
+{
+    uint32_t cfg_reg_masked = cfg_reg;
+
+    cfg_reg_masked &= ~(TWO_DEFALT_CONFIG_MASK << SWCLK_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << SWDIO_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << I2C_SDA_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << I2C_SCL_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
+                      ~(TWO_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+
+    cfg_reg_masked |= (OSPEEDR_SWCLK) |
+                      (OSPEEDR_SWDIO) |
+                      (OSPEEDR_I2C_SDA) |
+                      (OSPEEDR_I2C_SCL) |
+                      (OSPEEDR_UC_INT) |
+                      (OSPEEDR_UART_RX) |
+                      (OSPEEDR_UART_TX);
+
+    return cfg_reg_masked;
+}
+
 static uint32_t PUPDR_default_pins_mask(uint32_t cfg_reg)
 {
     uint32_t cfg_reg_masked = cfg_reg;
@@ -161,6 +184,8 @@ static uint32_t config_floating_state(uint32_t stm_reg, uint64_t virtual_reg)
 void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
 {
     uint32_t direction_reg_cfg = 0;
+    uint32_t output_speed_reg_cfg = 0;
+
     extended_reg_content_t direction_cfg_buffer =
         {
             .extended_cfg_content_0 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_0)) ? EXP_OUTPUT_MODE : EXP_INPUT_MODE,
@@ -182,6 +207,28 @@ void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
             .extended_cfg_content_15 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_15)) ? EXP_OUTPUT_MODE : EXP_INPUT_MODE,
         };
 
+    // configuracao do registrador de velocidade de saida
+    extended_reg_content_t speed_cfg_buffer =
+        {
+            .extended_cfg_content_0 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_0)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_1 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_1)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_2 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_2)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_3 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_3)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_4 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_4)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_4 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_4)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_5 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_5)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_6 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_6)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_7 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_7)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_8 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_8)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_9 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_9)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_10 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_10)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_11 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_11)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_12 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_12)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_13 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_13)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_14 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_14)) ? EXP_OUT_LOW : 0,
+            .extended_cfg_content_15 = (SLAVE_READ_BIT(virtual_reg, EXP_IO_PIN_15)) ? EXP_OUT_LOW : 0,
+        };
+
     direction_reg_cfg = (uint32_t)((direction_cfg_buffer.extended_cfg_content_15 << EXTENDED_REG_POS_15) |
                                    (direction_cfg_buffer.extended_cfg_content_14 << EXTENDED_REG_POS_14) |
                                    (direction_cfg_buffer.extended_cfg_content_13 << EXTENDED_REG_POS_13) |
@@ -199,23 +246,45 @@ void exp_direction_config(uint16_t virtual_reg, exp_ports_t port)
                                    (direction_cfg_buffer.extended_cfg_content_1 << EXTENDED_REG_POS_1) |
                                    (direction_cfg_buffer.extended_cfg_content_0 << EXTENDED_REG_POS_0));
 
+    output_speed_reg_cfg = (uint32_t)((speed_cfg_buffer.extended_cfg_content_15 << EXTENDED_REG_POS_15) |
+                                      (speed_cfg_buffer.extended_cfg_content_14 << EXTENDED_REG_POS_14) |
+                                      (speed_cfg_buffer.extended_cfg_content_13 << EXTENDED_REG_POS_13) |
+                                      (speed_cfg_buffer.extended_cfg_content_12 << EXTENDED_REG_POS_12) |
+                                      (speed_cfg_buffer.extended_cfg_content_11 << EXTENDED_REG_POS_11) |
+                                      (speed_cfg_buffer.extended_cfg_content_10 << EXTENDED_REG_POS_10) |
+                                      (speed_cfg_buffer.extended_cfg_content_9 << EXTENDED_REG_POS_9) |
+                                      (speed_cfg_buffer.extended_cfg_content_8 << EXTENDED_REG_POS_8) |
+                                      (speed_cfg_buffer.extended_cfg_content_7 << EXTENDED_REG_POS_7) |
+                                      (speed_cfg_buffer.extended_cfg_content_6 << EXTENDED_REG_POS_6) |
+                                      (speed_cfg_buffer.extended_cfg_content_5 << EXTENDED_REG_POS_5) |
+                                      (speed_cfg_buffer.extended_cfg_content_4 << EXTENDED_REG_POS_4) |
+                                      (speed_cfg_buffer.extended_cfg_content_3 << EXTENDED_REG_POS_3) |
+                                      (speed_cfg_buffer.extended_cfg_content_2 << EXTENDED_REG_POS_2) |
+                                      (speed_cfg_buffer.extended_cfg_content_1 << EXTENDED_REG_POS_1) |
+                                      (speed_cfg_buffer.extended_cfg_content_0 << EXTENDED_REG_POS_0));
+
     switch (port)
     {
     case EXP_PORT_A:
         direction_reg_cfg = MODER_default_pins_mask(direction_reg_cfg);
+        output_speed_reg_cfg = OSPEEDR_default_pins_mask(output_speed_reg_cfg);
         GPIOA->MODER = direction_reg_cfg;
+        GPIOA->OSPEEDR = output_speed_reg_cfg;
         break;
     case EXP_PORT_B:
         GPIOB->MODER = direction_reg_cfg;
+        GPIOB->OSPEEDR = output_speed_reg_cfg;
         break;
     case EXP_PORT_C:
         GPIOC->MODER = direction_reg_cfg;
+        GPIOC->OSPEEDR = output_speed_reg_cfg;
         break;
     default:
         break;
     };
     print_STM_reg(direction_reg_cfg);
     print_virtual_reg((uint32_t)virtual_reg);
+    print_STM_reg(output_speed_reg_cfg);
 }
 
 void exp_out_mode_config(uint16_t virtual_reg, exp_ports_t port)
@@ -257,8 +326,8 @@ void exp_in_mode_config(uint16_t virtual_reg, exp_ports_t port)
                                                                         ~(1 << UC_INT_16_BIT_POS) &
                                                                         ~(1 << UART_RX_16_BIT_POS) &
                                                                         ~(1 << UART_TX_16_BIT_POS);
-        pupdr_reg = config_floating_state(pupdr_reg, current_scope_registers[EXP_IO_INPUT_MODE_A_REG].reg_content);     // reseta os pinos que deve ser flutuantes
-        GPIOA->PUPDR = pupdr_reg;   // aplica a modifica no registrador do STM32
+        pupdr_reg = config_floating_state(pupdr_reg, current_scope_registers[EXP_IO_INPUT_MODE_A_REG].reg_content); // reseta os pinos que deve ser flutuantes
+        GPIOA->PUPDR = pupdr_reg;                                                                                   // aplica a modifica no registrador do STM32
         break;
 
     case EXP_PORT_B:
