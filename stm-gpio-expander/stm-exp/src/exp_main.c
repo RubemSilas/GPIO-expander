@@ -71,6 +71,8 @@ void i2c_request_listener(void)
     {
         if (HAL_I2C_Slave_Receive(&I2C_HANDLER, (uint8_t *)&rqst_buffer, sizeof(uint32_t), I2C_TIMEOUT) == HAL_OK)
         {
+            rqst_buffer = switch_endianes(rqst_buffer);
+
             /* preenchimento da estrutura de mensagem de envio */
             incoming_i2c_msg.rw = SLAVE_READ_BIT(rqst_buffer, EXP_RW_BIT_POS);
             incoming_i2c_msg.exp_register = (rqst_buffer >> 16) & BYTE_MASK;

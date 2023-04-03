@@ -40,3 +40,18 @@ void print_virtual_reg(uint32_t virtual_reg)
     HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
     print_register(virtual_reg);
 }
+
+uint32_t switch_endianes(uint32_t target_value)
+{
+    uint32_t new_value = 0;
+    uint8_t bytes_position_buffer[4] = {0};
+
+    bytes_position_buffer[0] = target_value & (0x000000FF);
+    bytes_position_buffer[1] = (target_value >> 8 & (0x000000FF));
+    bytes_position_buffer[2] = (target_value >> 16 & (0x000000FF));
+    bytes_position_buffer[3] = (target_value >> 24 & (0x000000FF));
+    
+    new_value = (bytes_position_buffer[0] << 24) | (bytes_position_buffer[1] << 16)| (bytes_position_buffer[2] << 8) | (bytes_position_buffer[3] << 0);
+    
+    return new_value;
+}

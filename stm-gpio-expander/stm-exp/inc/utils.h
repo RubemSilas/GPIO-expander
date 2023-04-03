@@ -171,5 +171,6 @@ typedef struct
 void print_register(uint32_t reg);
 void print_STM_reg(uint32_t stm_reg);
 void print_virtual_reg(uint32_t virtual_reg);
+uint32_t switch_endianes(uint32_t target_value);
 
 #endif
