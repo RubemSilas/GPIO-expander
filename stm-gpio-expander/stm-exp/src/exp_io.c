@@ -84,17 +84,25 @@ static uint32_t MODER_default_pins_mask(uint32_t cfg_reg)
                       ~(TWO_DEFALT_CONFIG_MASK << SWDIO_32_BIT_POS) &
                       ~(TWO_DEFALT_CONFIG_MASK << I2C_SDA_32_BIT_POS) &
                       ~(TWO_DEFALT_CONFIG_MASK << I2C_SCL_32_BIT_POS) &
-                      ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
-                      ~(TWO_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
-                      ~(TWO_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+                      #ifndef EXP_UART_DEBUG_ENABLE
+                        ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS);
+                      #else
+                        ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
+                        ~(TWO_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
+                        ~(TWO_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+                      #endif
 
     cfg_reg_masked |= MODER_SWCLK |
                       (MODER_SWDIO) |
                       (MODER_I2C_SDA) |
                       (MODER_I2C_SCL) |
-                      (MODER_UC_INT) |
-                      (MODER_UART_RX) |
-                      (MODER_UART_TX);
+                      #ifndef EXP_UART_DEBUG_ENABLE
+                        (MODER_UC_INT);
+                      #else
+                        (MODER_UC_INT) |
+                        (MODER_UART_RX) |
+                        (MODER_UART_TX);
+                      #endif
 
     return cfg_reg_masked;
 }
@@ -107,17 +115,25 @@ static uint32_t OSPEEDR_default_pins_mask(uint32_t cfg_reg)
                       ~(TWO_DEFALT_CONFIG_MASK << SWDIO_32_BIT_POS) &
                       ~(TWO_DEFALT_CONFIG_MASK << I2C_SDA_32_BIT_POS) &
                       ~(TWO_DEFALT_CONFIG_MASK << I2C_SCL_32_BIT_POS) &
-                      ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
-                      ~(TWO_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
-                      ~(TWO_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+                      #ifndef EXP_UART_DEBUG_ENABLE
+                      ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS);
+                      #else
+                        ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
+                        ~(TWO_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
+                        ~(TWO_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+                      #endif
 
     cfg_reg_masked |= (OSPEEDR_SWCLK) |
                       (OSPEEDR_SWDIO) |
                       (OSPEEDR_I2C_SDA) |
                       (OSPEEDR_I2C_SCL) |
-                      (OSPEEDR_UC_INT) |
-                      (OSPEEDR_UART_RX) |
-                      (OSPEEDR_UART_TX);
+                      #ifndef EXP_UART_DEBUG_ENABLE
+                        (OSPEEDR_UC_INT);
+                      #else
+                        (OSPEEDR_UC_INT) |
+                        (OSPEEDR_UART_RX) |
+                        (OSPEEDR_UART_TX);
+                      #endif
 
     return cfg_reg_masked;
 }
@@ -130,17 +146,25 @@ static uint32_t PUPDR_default_pins_mask(uint32_t cfg_reg)
                       ~(TWO_DEFALT_CONFIG_MASK << SWDIO_32_BIT_POS) &
                       ~(TWO_DEFALT_CONFIG_MASK << I2C_SDA_32_BIT_POS) &
                       ~(TWO_DEFALT_CONFIG_MASK << I2C_SCL_32_BIT_POS) &
-                      ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
-                      ~(TWO_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
-                      ~(TWO_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+                      #ifndef EXP_UART_DEBUG_ENABLE
+                        ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS);
+                      #else
+                        ~(TWO_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
+                        ~(TWO_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
+                        ~(TWO_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+                      #endif
 
     cfg_reg_masked |= PUPDR_SWCLK |
                       (PUPDR_SWDIO) |
                       (PUPDR_I2C_SDA) |
                       (PUPDR_I2C_SCL) |
-                      (PUPDR_UC_INT) |
-                      (PUPDR_UART_RX) |
-                      (PUPDR_UART_TX);
+                      #ifndef EXP_UART_DEBUG_ENABLE
+                        (PUPDR_UC_INT);
+                      #else
+                        (PUPDR_UC_INT) |
+                        (PUPDR_UART_RX) |
+                        (PUPDR_UART_TX);
+                      #endif
 
     return cfg_reg_masked;
 }
@@ -154,17 +178,25 @@ static uint32_t OTYPER_default_pins_mask(uint32_t cfg_reg)
                       ~(ONE_DEFALT_CONFIG_MASK << SWDIO_32_BIT_POS) &
                       ~(ONE_DEFALT_CONFIG_MASK << I2C_SDA_32_BIT_POS) &
                       ~(ONE_DEFALT_CONFIG_MASK << I2C_SCL_32_BIT_POS) &
-                      ~(ONE_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
-                      ~(ONE_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
-                      ~(ONE_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+                      #ifndef EXP_UART_DEBUG_ENABLE
+                        ~(ONE_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS);
+                      #else
+                        ~(ONE_DEFALT_CONFIG_MASK << UC_INT_32_BIT_POS) &
+                        ~(ONE_DEFALT_CONFIG_MASK << UART_RX_32_BIT_POS) &
+                        ~(ONE_DEFALT_CONFIG_MASK << UART_TX_32_BIT_POS);
+                      #endif
 
     cfg_reg_masked |= OTYPER_SWCLK |
                       (OTYPER_SWDIO) |
                       (OTYPER_I2C_SDA) |
                       (OTYPER_I2C_SCL) |
-                      (OTYPER_UC_INT) |
-                      (OTYPER_UART_RX) |
-                      (OTYPER_UART_TX);
+                      #ifndef EXP_UART_DEBUG_ENABLE
+                        (OTYPER_UC_INT);
+                      #else
+                        (OTYPER_UC_INT) |
+                        (OTYPER_UART_RX) |
+                        (OTYPER_UART_TX);
+                      #endif
 
     return cfg_reg_masked;
 }
@@ -548,8 +580,11 @@ void exp_interruption_detector(void)
     uint16_t it_capture_A;
     uint16_t it_capture_B;
     uint16_t it_capture_C;
+
+    #ifdef EXP_UART_DEBUG_ENABLE
     char it_msg[60];
     sprintf(it_msg, "IT detectado!!\r\n");
+    #endif
 
     // atualizacao dos estados de GPIO
     current_scope_registers[EXP_IO_GPIO_A_REG].reg_content = (uint16_t)(0x0000FFFF & GPIOA->IDR);
@@ -564,7 +599,10 @@ void exp_interruption_detector(void)
         {
             current_scope_registers[EXP_IO_PORT_A_INT_CAPTURE].reg_content = it_capture_A;
             exp_set_uc_int_pin();
+
+            #ifdef EXP_UART_DEBUG_ENABLE
             HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)it_msg, strlen(it_msg), UART_TIMEOUT);
+            #endif
         }
     }
     if (current_scope_registers[EXP_IO_PORT_B_INT_ENABLE].reg_content)
@@ -575,7 +613,10 @@ void exp_interruption_detector(void)
         {
             current_scope_registers[EXP_IO_PORT_B_INT_CAPTURE].reg_content = it_capture_B;
             exp_set_uc_int_pin();
+
+            #ifdef EXP_UART_DEBUG_ENABLE
             HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)it_msg, strlen(it_msg), UART_TIMEOUT);
+            #endif
         }
     }
     if (current_scope_registers[EXP_IO_PORT_C_INT_ENABLE].reg_content)
@@ -586,7 +627,10 @@ void exp_interruption_detector(void)
         {
             current_scope_registers[EXP_IO_PORT_C_INT_CAPTURE].reg_content = it_capture_C;
             exp_set_uc_int_pin();
+
+            #ifdef EXP_UART_DEBUG_ENABLE
             HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)it_msg, strlen(it_msg), UART_TIMEOUT);
+            #endif
         }
     }
 }

@@ -1,5 +1,6 @@
 #include "utils.h"
 
+#ifdef EXP_UART_DEBUG_ENABLE
 void print_register(uint32_t reg)
 {
     char reg_value[100];
@@ -20,7 +21,7 @@ void print_register(uint32_t reg)
         }
     }
 
-    sprintf(reg_value, " - hex: %X", reg);
+    sprintf(reg_value, " - hex: %X\r\n", reg);
     HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)reg_value, strlen(reg_value), UART_TIMEOUT);
 }
 
@@ -40,6 +41,8 @@ void print_virtual_reg(uint32_t virtual_reg)
     HAL_UART_Transmit(&UART_HANDLER, (uint8_t *)log_msg, strlen(log_msg), UART_TIMEOUT);
     print_register(virtual_reg);
 }
+#endif
+
 
 uint32_t switch_endianes(uint32_t target_value)
 {

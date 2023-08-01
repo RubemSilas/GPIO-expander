@@ -8,7 +8,13 @@
 
 #include "main.h"
 #include "i2c.h"
+
+#define EXP_UART_DEBUG_ENABLE
+
+#ifdef EXP_UART_DEBUG_ENABLE
 #include "usart.h"
+#define UART_HANDLER huart2
+#endif
 
 // SYSTEM PIN PARAMETERS
 #define TWO_DEFALT_CONFIG_MASK (0x03)
@@ -71,7 +77,6 @@
 #define IT_SET_UC_PIN_POS (8)
 #define IT_RESET_UC_PIN_POS (24)
 
-#define UART_HANDLER huart2
 #define I2C_HANDLER hi2c1
 
 #define UART_TIMEOUT (100) // milisegundos
@@ -168,9 +173,16 @@ typedef struct
 } genereric_reg_t;
 #pragma pack(pop)
 
-void print_register(uint32_t reg);
-void print_STM_reg(uint32_t stm_reg);
-void print_virtual_reg(uint32_t virtual_reg);
+#ifndef EXP_UART_DEBUG_ENABLE
+#define print_register(reg) ;
+#define print_STM_reg(stm_reg) ; 
+#define print_virtual_reg(virtual_reg) ; 
+#else
+void print_register(uint32_t reg); 
+void print_STM_reg(uint32_t stm_reg); 
+void print_virtual_reg(uint32_t virtual_reg); 
+#endif
+
 uint32_t switch_endianes(uint32_t target_value);
 
 #endif
